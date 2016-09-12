@@ -11,8 +11,6 @@ import HaidoraStatusProvider
 
 class ViewController: UIViewController,HaidoraStatusable {
     
-    var statusViews: [HaidoraStatusProvider] = [HaidoraStatusProvider]()
-    
     var statusProvider: HaidoraStatusProvider.Type? {
         return MBProgressHUDSwiftWrap.self
     }

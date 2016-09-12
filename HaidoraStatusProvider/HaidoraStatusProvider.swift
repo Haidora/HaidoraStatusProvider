@@ -8,22 +8,13 @@
 
 import UIKit
 import Foundation
+import ObjectiveC
 
 /**
  统一HUD的接口方式(可针对该协议做扩展,扩展需要和**HaidoraStatusProvider**配合)
  */
 public protocol HaidoraStatusable : class {
-    
-    //配置信息
-    /// show where,默认实现
-    var onView: UIView { get }
-    
-    /// 用于保存当前显示的huds(需要实现)
-    var statusViews: [HaidoraStatusProvider] { get set }
-    
-    /// 用于配置Hud Provider,默认为空
-    var statusProvider: HaidoraStatusProvider.Type? { get }
-    
+
     /**
      显示加载动画
      
@@ -44,14 +35,35 @@ public protocol HaidoraStatusable : class {
     func hideAll()
 }
 
+private struct AssociatedKeys {
+    static var statusViews = "HaidoraStatusable_AssociatedKeys_statusViews"
+}
+
 extension HaidoraStatusable {
+    
+    //配置信息
     
     // 默认显示在window上面
     public var onView: UIView {
         return ((UIApplication.sharedApplication().delegate?.window)!)!
     }
     
-    /// 默认为空
+    /// 用于保存当前显示的huds
+    public var statusViews: [HaidoraStatusProvider] {
+        get {
+            var statusViewsTemp: [HaidoraStatusProvider]? = unsafeBitCast(objc_getAssociatedObject(self, &AssociatedKeys.statusViews) ,[HaidoraStatusProvider].self)
+            if statusViewsTemp == nil {
+                statusViewsTemp = [HaidoraStatusProvider]()
+                self.statusViews = statusViewsTemp!
+            }
+            return statusViewsTemp!
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &AssociatedKeys.statusViews, unsafeBitCast(newValue, AnyObject.self), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    /// 用于配置Hud Provider,默认为空
     public var statusProvider: HaidoraStatusProvider.Type? {
         return nil
     }

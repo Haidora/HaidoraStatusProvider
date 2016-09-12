@@ -16,8 +16,6 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 import HaidoraStatusProvider
 //2.对需要使用hud的对象实现HaidoraStatusable
 class ViewController: UIViewController,HaidoraStatusable {
-    //3.HaidoraStatusable,用于保存已经显示的hud
-    var statusViews: [HaidoraStatusProvider] = [HaidoraStatusProvider]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
