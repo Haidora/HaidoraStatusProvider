@@ -14,6 +14,16 @@ import Foundation
  */
 public protocol HaidoraStatusable : class {
     
+    //配置信息
+    /// show where,默认实现
+    var onView: UIView { get }
+    
+    /// 用于保存当前显示的huds(需要实现)
+    var statusViews: [HaidoraStatusProvider] { get set }
+    
+    /// 用于配置Hud Provider,默认为空
+    var statusProvider: HaidoraStatusProvider.Type? { get }
+    
     /**
      显示加载动画
      
@@ -34,34 +44,14 @@ public protocol HaidoraStatusable : class {
     func hideAll()
 }
 
-/**
- 为对象添加HUD的能力,需要实现该协议
- 
- ```
- class ViewController: UIViewController, HaidoraStatusPresenter {
- 
- var statusViews: [HaidoraStatusProvider] = [HaidoraStatusProvider]()
- }
- ```
- */
-public protocol HaidoraStatusPresenter : HaidoraStatusable {
-    
-    /// show where,默认实现
-    var onView: UIView { get }
-    /// huds,需要实现
-    var statusViews: [HaidoraStatusProvider] { get set }
-    /// 默认为空
-    var statusProvider: HaidoraStatusProvider.Type? { get }
-}
-
-// HaidoraStatusPresenter - 默认实现
-extension HaidoraStatusPresenter {
+extension HaidoraStatusable {
     
     // 默认显示在window上面
     public var onView: UIView {
         return ((UIApplication.sharedApplication().delegate?.window)!)!
     }
     
+    /// 默认为空
     public var statusProvider: HaidoraStatusProvider.Type? {
         return nil
     }
@@ -72,9 +62,8 @@ extension HaidoraStatusPresenter {
      - parameter loadingMessage: 加载字符串
      */
     public func show(loadingMessage:String = "loading") {
-        let statusView = self.loadProvider(self.statusProvider).init()
+        let statusView = self.buildProvider()
         statusView.show(loadingMessage, onView: onView)
-        statusViews.append(statusView)
     }
     
     /**
@@ -97,18 +86,22 @@ extension HaidoraStatusPresenter {
     }
     
     /// helper
-    public func loadProvider(provider:HaidoraStatusProvider.Type?) -> HaidoraStatusProvider.Type{
-        if provider == Optional.None {
-            return HaidoraStatusConfig.shareInstance.provider
+    public func buildProvider() -> HaidoraStatusProvider {
+        var providerType: HaidoraStatusProvider.Type?
+        if self.statusProvider == Optional.None {
+            providerType = HaidoraStatusConfig.shareInstance.provider
         }
         else {
-            return provider!
+            providerType = self.statusProvider
         }
+        var provider = providerType!.init()
+        statusViews.append(provider)
+        return provider
     }
 }
 
-// HaidoraStatusPresenter - 默认实现
-extension HaidoraStatusPresenter where Self: UIViewController {
+// HaidoraStatusable - 默认实现
+extension HaidoraStatusable where Self: UIViewController {
     
     public var onView: UIView {
         return self.view

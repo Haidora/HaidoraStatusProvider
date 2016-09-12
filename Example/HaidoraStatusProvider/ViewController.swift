@@ -9,13 +9,18 @@
 import UIKit
 import HaidoraStatusProvider
 
-class ViewController: UIViewController,HaidoraStatusPresenter {
+class ViewController: UIViewController,HaidoraStatusable {
     
     var statusViews: [HaidoraStatusProvider] = [HaidoraStatusProvider]()
+    
+    var statusProvider: HaidoraStatusProvider.Type? {
+        return MBProgressHUDSwiftWrap.self
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
+//        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
         // Do any additional setup after loading the view, typically from a nib.
         
     }
@@ -30,6 +35,29 @@ class ViewController: UIViewController,HaidoraStatusPresenter {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+}
+
+extension HaidoraStatusable {
+    
+    public func custom_method() {
+        print("上层接口－自定义方法")
+        let statusView = self.buildProvider()
+        //事件转发到Provider
+        statusView.custom_method()
+    }
+}
+
+extension HaidoraStatusProvider {
+    
+    public func custom_method() {
+        print("真正实现-自定义方法")
+    }
+}
+
+extension HaidoraStatusProvider where Self: MBProgressHUDSwiftWrap {
+    public func custom_method() {
+        print("某种hud-自定义方法")
     }
 }
 
