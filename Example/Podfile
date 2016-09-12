@@ -1,0 +1,5 @@
+use_frameworks!
+
+target 'HaidoraStatusProvider_Example' do
+  pod 'HaidoraStatusProvider/MBProgressHUD', :path => '../'
+end
