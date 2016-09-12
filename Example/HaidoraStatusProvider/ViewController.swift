@@ -15,6 +15,7 @@ class ViewController: UIViewController,HaidoraStatusPresenter {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
         // Do any additional setup after loading the view, typically from a nib.
         
     }

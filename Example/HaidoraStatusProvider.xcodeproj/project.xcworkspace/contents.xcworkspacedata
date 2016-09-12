@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:HaidoraStatusProviderDemo.xcodeproj">
+      location = "self:HaidoraStatusProvider.xcodeproj">
    </FileRef>
 </Workspace>
