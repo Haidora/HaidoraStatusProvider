@@ -20,14 +20,14 @@ public protocol HaidoraStatusable : class {
      
      - parameter loadingMessage: 加载字符串
      */
-    func show(loadingMessage: String)
+    func show(_ loadingMessage: String)
     
     /**
      隐藏加载动画
      
      - parameter delay: 延时时间.0不延时
      */
-    func hide(delay: NSTimeInterval)
+    func hide(_ delay: TimeInterval)
     
     /**
      隐藏所有的动画
@@ -39,27 +39,29 @@ private struct AssociatedKeys {
     static var statusViews = "HaidoraStatusable_AssociatedKeys_statusViews"
 }
 
-extension HaidoraStatusable {
+extension HaidoraStatusable where Self: AnyObject {
     
     //配置信息
     
     // 默认显示在window上面
     public var onView: UIView {
-        return ((UIApplication.sharedApplication().delegate?.window)!)!
+        return ((UIApplication.shared.delegate?.window)!)!
     }
     
     /// 用于保存当前显示的huds
     public var statusViews: [HaidoraStatusProvider] {
         get {
-            var statusViewsTemp: [HaidoraStatusProvider]? = unsafeBitCast(objc_getAssociatedObject(self, &AssociatedKeys.statusViews) ,[HaidoraStatusProvider].self)
-            if statusViewsTemp == nil {
-                statusViewsTemp = [HaidoraStatusProvider]()
-                self.statusViews = statusViewsTemp!
+            var values: [HaidoraStatusProvider]? = objc_getAssociatedObject(self,&AssociatedKeys.statusViews) as? [HaidoraStatusProvider]
+            if let values = (objc_getAssociatedObject(self,&AssociatedKeys.statusViews) as? [HaidoraStatusProvider]) {
+                return values
+            } else {
+                let values = [HaidoraStatusProvider]()
+                objc_setAssociatedObject(self,&AssociatedKeys.statusViews,values,objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                return values
             }
-            return statusViewsTemp!
         }
         set(newValue) {
-            objc_setAssociatedObject(self, &AssociatedKeys.statusViews, unsafeBitCast(newValue, AnyObject.self), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self,&AssociatedKeys.statusViews,newValue,objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -73,7 +75,7 @@ extension HaidoraStatusable {
      
      - parameter loadingMessage: 加载字符串
      */
-    public func show(loadingMessage:String = "loading") {
+    public func show(_ loadingMessage:String = "loading") {
         let statusView = self.buildProvider()
         statusView.show(loadingMessage, onView: onView)
     }
@@ -83,7 +85,7 @@ extension HaidoraStatusable {
      
      - parameter delay: 延时时间.0不延时
      */
-    public func hide(delay: NSTimeInterval = 0){
+    public func hide(_ delay: TimeInterval = 0){
         statusViews.last?.hide(delay)
         statusViews.removeLast()
     }
@@ -100,13 +102,13 @@ extension HaidoraStatusable {
     /// helper
     public func buildProvider() -> HaidoraStatusProvider {
         var providerType: HaidoraStatusProvider.Type?
-        if self.statusProvider == Optional.None {
+        if self.statusProvider == Optional.none {
             providerType = HaidoraStatusConfig.shareInstance.provider
         }
         else {
             providerType = self.statusProvider
         }
-        var provider = providerType!.init()
+        let provider = providerType!.init()
         statusViews.append(provider)
         return provider
     }
@@ -128,27 +130,27 @@ extension HaidoraStatusable where Self: UIViewController {
 public protocol HaidoraStatusProvider {
     
     init()
-    func show(loadingMessage: String, onView: UIView)
-    func hide(delay: NSTimeInterval)
+    func show(_ loadingMessage: String, onView: UIView)
+    func hide(_ delay: TimeInterval)
 }
 
 /// 用于配置默认的HaidoraStatusProvider
-public class HaidoraStatusConfig {
+open class HaidoraStatusConfig {
     
-    public var provider: HaidoraStatusProvider.Type
+    open var provider: HaidoraStatusProvider.Type
     
-    public class var shareInstance: HaidoraStatusConfig {
+    open class var shareInstance: HaidoraStatusConfig {
         get {
             return Singleton.instance
         }
     }
     
     // MARK: private
-    private init() {
+    fileprivate init() {
         provider = HaidoraStatusProviderBuildIn.LoadingStatusView.self
     }
     
-    private struct Singleton {
+    fileprivate struct Singleton {
         static let instance = HaidoraStatusConfig()
     }
     
@@ -163,21 +165,21 @@ internal struct HaidoraStatusProviderBuildIn {
             #if os(tvOS)
                 $0.activityIndicatorViewStyle = .WhiteLarge
             #elseif os(iOS)
-                $0.activityIndicatorViewStyle = .Gray
+                $0.activityIndicatorViewStyle = .gray
             #endif
             return $0
-        }(UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge))
+        }(UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge))
 
         let loadingLabel: UILabel = {
             $0.text = "Loading…"
-            $0.font = UIFont.preferredFontForTextStyle(UIFontTextStyleFootnote)
-            $0.textColor = UIColor.blackColor()
+            $0.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote)
+            $0.textColor = UIColor.black
             return $0
         }(UILabel())
         
          convenience required init() {
-            self.init(frame: CGRectZero)
-            self.autoresizingMask = [UIViewAutoresizing.FlexibleHeight,UIViewAutoresizing.FlexibleWidth]
+            self.init(frame: CGRect.zero)
+            self.autoresizingMask = [UIViewAutoresizing.flexibleHeight,UIViewAutoresizing.flexibleWidth]
             self.addSubview(self.activityIndicatorView)
             self.addSubview(self.loadingLabel)
         }
@@ -191,13 +193,13 @@ internal struct HaidoraStatusProviderBuildIn {
         }
 
         // MARK: HaidoraStatusProvider
-        func show(loadingMessage: String, onView: UIView) {
+        func show(_ loadingMessage: String, onView: UIView) {
             loadingLabel.text = loadingMessage
             onView.addSubview(self)
             self.frame = onView.bounds
         }
         
-        func hide(delay: NSTimeInterval) {
+        func hide(_ delay: TimeInterval) {
             self.removeFromSuperview()
         }
     }

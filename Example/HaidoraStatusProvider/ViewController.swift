@@ -18,14 +18,14 @@ class ViewController: UIViewController,HaidoraStatusable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
+        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
         // Do any additional setup after loading the view, typically from a nib.
         
     }
 
-    @IBAction func showAction(sender: AnyObject) {
+    @IBAction func showAction(_ sender: AnyObject) {
         self.show()
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(3 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
             self.hide()
         }
     }
