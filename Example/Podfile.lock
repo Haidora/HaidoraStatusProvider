@@ -1,6 +1,6 @@
 PODS:
-  - HaidoraStatusProvider/Core (0.1.0)
-  - HaidoraStatusProvider/MBProgressHUD (0.1.0):
+  - HaidoraStatusProvider/Core (0.1.1)
+  - HaidoraStatusProvider/MBProgressHUD (0.1.1):
     - HaidoraStatusProvider/Core
     - MBProgressHUD (~> 1.0.0)
   - MBProgressHUD (1.0.0)
@@ -13,7 +13,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  HaidoraStatusProvider: 35afb9dd6f21f4efdd48a8927673d11e3d519921
+  HaidoraStatusProvider: ba73803850f09d0ba62f69df9c8ca387b26edfee
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
 
 COCOAPODS: 0.39.0

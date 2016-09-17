@@ -66,7 +66,8 @@ extension HaidoraStatusProvider where Self: MBProgressHUDSwiftWrap {
 
 
 ## Requirements
-- Swift
+- Xcode8+
+- Swift3.0
 - iOS8+
 
 ## Installation

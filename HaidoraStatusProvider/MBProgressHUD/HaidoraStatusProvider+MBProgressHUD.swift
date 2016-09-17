@@ -9,7 +9,7 @@
 import Foundation
 import MBProgressHUD
 
-public class  MBProgressHUDSwiftWrap: HaidoraStatusProvider {
+open class  MBProgressHUDSwiftWrap: HaidoraStatusProvider {
     
     var hud: MBProgressHUD?
     
@@ -17,12 +17,12 @@ public class  MBProgressHUDSwiftWrap: HaidoraStatusProvider {
     }
     
     // MARK: HaidoraStatusProvider
-     public func show(loadingMessage: String, onView: UIView) {
-        self.hud = MBProgressHUD.showHUDAddedTo(onView, animated: true)
+     open func show(_ loadingMessage: String, onView: UIView) {
+        self.hud = MBProgressHUD.showAdded(to: onView, animated: true)
         self.hud?.label.text = loadingMessage
     }
     
-    public func hide(delay: NSTimeInterval) {
-        self.hud?.hideAnimated(true, afterDelay: delay)
+    open func hide(_ delay: TimeInterval) {
+        self.hud?.hide(animated: true, afterDelay: delay)
     }
 }
