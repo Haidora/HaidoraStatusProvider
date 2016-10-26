@@ -9,16 +9,16 @@
 import UIKit
 import HaidoraStatusProvider
 
-class ViewController: UIViewController,HaidoraStatusable {
+class ViewController: UIViewController, Statusable {
     
-    var statusProvider: HaidoraStatusProvider.Type? {
-        return MBProgressHUDSwiftWrap.self
-    }
+//    var statusProvider: StatusProvider.Type? {
+//        return MBProgressHUDSwiftWrap.self
+//    }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        HaidoraStatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
+//        StatusConfig.shareInstance.provider = MBProgressHUDSwiftWrap.self
         // Do any additional setup after loading the view, typically from a nib.
         
     }
@@ -36,7 +36,7 @@ class ViewController: UIViewController,HaidoraStatusable {
     }
 }
 
-extension HaidoraStatusable {
+extension Statusable {
     
     public func custom_method() {
         print("上层接口－自定义方法")
@@ -46,14 +46,14 @@ extension HaidoraStatusable {
     }
 }
 
-extension HaidoraStatusProvider {
+extension StatusProvider {
     
     public func custom_method() {
         print("真正实现-自定义方法")
     }
 }
 
-extension HaidoraStatusProvider where Self: MBProgressHUDSwiftWrap {
+extension StatusProvider where Self: MBProgressHUDSwiftWrap {
     public func custom_method() {
         print("某种hud-自定义方法")
     }
