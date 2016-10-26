@@ -9,7 +9,7 @@
 import Foundation
 import MBProgressHUD
 
-open class  MBProgressHUDSwiftWrap: HaidoraStatusProvider {
+open class  MBProgressHUDSwiftWrap: StatusProvider {
     
     var hud: MBProgressHUD?
     
