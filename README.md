@@ -9,6 +9,8 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+[Demo on line](https://appetize.io/app/v21hd41v4j8h5pbkp86paxj6zw?device=iphone4s&scale=50&orientation=portrait&osVersion=8.4)
+
 #### 1.基本使用
 
 ```swift
